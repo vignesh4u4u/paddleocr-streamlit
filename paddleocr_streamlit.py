@@ -12,7 +12,7 @@ import tempfile
 import os
 from io import BytesIO
 import mysql.connector
-import fitz
+#import fitz
 import docx2txt
 import streamlit as st
 import pandas as pd
