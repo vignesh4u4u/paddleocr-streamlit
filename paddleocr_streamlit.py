@@ -184,13 +184,7 @@ def extract_text_from_files(file):
         file_type = file.type
         all_text = ""
         if file_type == "application/pdf":
-            total_page_count = 0
-            with fitz.open(stream=file.read(), filetype="pdf") as pdf:
-                total_page_count += pdf.page_count
-                for page_num in range(pdf.page_count):
-                    page = pdf.load_page(page_num)
-                    text = page.get_text()
-                    all_text += text
+            all_text = extract_text(file.read())
 
         elif file_type in (
         "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "application/msword"):
