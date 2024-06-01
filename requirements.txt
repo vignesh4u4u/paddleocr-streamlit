@@ -17,3 +17,4 @@ uvicorn
 bs4
 docx2txt
 scikit-learn
+html5lib
