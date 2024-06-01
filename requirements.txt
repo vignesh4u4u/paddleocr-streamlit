@@ -5,7 +5,6 @@ numpy
 Pillow
 paddlepaddle
 paddleocr>=2.0.1
-pdfminer.six
 PyMuPDF==1.20.2
 huggingface_hub
 transformers
