@@ -2,22 +2,7 @@ import streamlit as st
 from paddleocr import PaddleOCR
 
 ocr = PaddleOCR(use_angle_cls=True, lang='en')
-"""
-st.title('Image Text Extraction')
 
-uploaded_files = st.file_uploader("Choose image files", type=['jpg', 'jpeg', 'png', 'webp'], accept_multiple_files=True)
-
-if uploaded_files:
-    for uploaded_file in uploaded_files:
-        st.image(uploaded_file, caption='Uploaded Image', use_column_width=True)
-        image_data = uploaded_file.read()
-        result = ocr.ocr(image_data)
-        text = ""
-        for line in result:
-            for word in line:
-                text += word[1][0] + " "
-        st.write(f"Extracted Text: {text}")
-"""
 
 import warnings
 warnings.filterwarnings("ignore", category=UserWarning, module="transformers.utils.generic")
@@ -34,7 +19,7 @@ import pandas as pd
 import requests
 import html5lib
 from bs4 import BeautifulSoup
-#from pdfminer.high_level import extract_text
+from pdfminer.high_level import extract_text
 from werkzeug.utils import secure_filename
 
 from sklearn.metrics.pairwise import cosine_similarity
@@ -51,8 +36,10 @@ from langchain_core.prompts import PromptTemplate
 from langchain_community.llms import HuggingFaceEndpoint
 from langchain_community.vectorstores import FAISS
 from sentence_transformers import SentenceTransformer
-api_key=st.secrets["token"]
-os.environ["HUGGINGFACEHUB_API_TOKEN"] = api_key
+
+from io import BytesIO, StringIO
+#api_key=st.secrets["token"]
+os.environ["HUGGINGFACEHUB_API_TOKEN"] = "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"
 
 
 embeddings = HuggingFaceEmbeddings(model_name='sentence-transformers/all-MiniLM-L6-v2')
@@ -184,7 +171,17 @@ def extract_text_from_files(file):
         file_type = file.type
         all_text = ""
         if file_type == "application/pdf":
-            all_text = extract_text(file.read())
+            file_bytes = file.read()
+            with tempfile.NamedTemporaryFile(delete=False) as temp_pdf:
+                temp_pdf.write(file_bytes)
+                temp_pdf_path = temp_pdf.name
+
+            # Ensure the file is closed before passing the path to extract_text
+            all_text = extract_text(temp_pdf_path)
+
+            # Clean up the temporary file
+            os.remove(temp_pdf_path)
+
 
         elif file_type in (
         "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "application/msword"):
