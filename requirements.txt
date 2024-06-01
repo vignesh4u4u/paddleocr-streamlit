@@ -4,4 +4,4 @@ streamlit
 numpy
 Pillow
 paddlepaddle
-paddleocr
+paddleocr>=2.0.1
