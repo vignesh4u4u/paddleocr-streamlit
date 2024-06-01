@@ -1,6 +1,5 @@
 import streamlit as st
 from paddleocr import PaddleOCR
-
 ocr = PaddleOCR(use_angle_cls=True, lang='en')
 
 st.title('Image Text Extraction')
