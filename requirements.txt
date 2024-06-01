@@ -1,0 +1,9 @@
+flask
+gevent
+Pillow
+opencv-python-headless
+opencv-python
+PyOpenGL
+PyOpenGL_accelerate
+paddlepaddle
+paddleocr
