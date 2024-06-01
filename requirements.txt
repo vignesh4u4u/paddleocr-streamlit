@@ -5,16 +5,4 @@ numpy
 Pillow
 paddlepaddle
 paddleocr>=2.0.1
-huggingface_hub
-transformers
-sentence-transformers
-langchain_community
-langchain
-mysql-connector-python
-faiss-cpu
-faiss-cpu
-uvicorn
-bs4
-docx2txt
-scikit-learn
-html5lib
+
