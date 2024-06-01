@@ -1,13 +1,7 @@
 db-sqlite3
 pip==23.0.1
 streamlit
-easyocr
-Pillow
 numpy
 Pillow
-opencv-python-headless
-opencv-python
-PyOpenGL
-PyOpenGL_accelerate
 paddlepaddle
 paddleocr
