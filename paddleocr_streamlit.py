@@ -34,7 +34,7 @@ import pandas as pd
 import requests
 import html5lib
 from bs4 import BeautifulSoup
-from pdfminer.high_level import extract_text
+#from pdfminer.high_level import extract_text
 from werkzeug.utils import secure_filename
 
 from sklearn.metrics.pairwise import cosine_similarity
