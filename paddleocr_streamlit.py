@@ -50,6 +50,6 @@ else:
                 detected_text += page_text.strip() + "\n\n"
                 os.remove(temp_image.name)
 
-        st.text_area("Extracted Text", detected_text)
+        st.write(detected_text)
 
 
