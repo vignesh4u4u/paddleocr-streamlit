@@ -1,35 +1,44 @@
 import os
+import tempfile
+import json
 import streamlit as st
 from paddleocr import PaddleOCR
 from PIL import Image
-import tempfile
-import json
+from io import BytesIO
 
 ocr = PaddleOCR(use_angle_cls=True, lang='en')
 
-st.title("Image Text Extraction")
-
-# Check if this is a Postman API request
+# Check if the request is coming from Postman
 if st.experimental_get_query_params().get("api", ["false"])[0].lower() == "true":
-    from io import BytesIO
+    st.title("API for OCR Text Extraction")
 
-    # Get file input from Postman (via JSON body)
+    # Receive the file from Postman
     uploaded_file = st.file_uploader("Upload an image", type=['jpg', 'jpeg', 'png', 'webp'])
+
     if uploaded_file:
+        detected_text = ""
+        
+        # Process the uploaded file
         with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as temp_image:
             image = Image.open(uploaded_file)
             image.save(temp_image.name)
 
             # Perform OCR
             result = ocr.ocr(temp_image.name)
-            detected_text = "\n".join([line[1][0] for line in result[0]])
+            page_text = "\n".join([line[1][0] for line in result[0]])
+            detected_text += page_text.strip() + "\n\n"
 
-            # Return JSON response for Postman
-            st.json({"extracted_text": detected_text})
+            # Cleanup temp file
             os.remove(temp_image.name)
 
+        # Return the result in JSON format
+        st.json({"extracted_text": detected_text.strip()})
+
 else:
-    # For the normal Streamlit app
+    # Regular Streamlit app for UI
+    st.title("Image Text Extraction")
+
+    # File uploader for multiple image files
     uploaded_files = st.file_uploader(
         "Choose image files",
         type=['jpg', 'jpeg', 'png', 'webp'],
@@ -40,16 +49,21 @@ else:
         detected_text = ""
 
         for idx, uploaded_file in enumerate(uploaded_files, start=1):
-            # Display the uploaded image
-            image = Image.open(uploaded_file)
-
+            # Process each uploaded file
             with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as temp_image:
+                image = Image.open(uploaded_file)
                 image.save(temp_image.name)
+
+                # Perform OCR
                 result = ocr.ocr(temp_image.name)
                 page_text = "\n".join([line[1][0] for line in result[0]])
                 detected_text += page_text.strip() + "\n\n"
+
+                # Cleanup temp file
                 os.remove(temp_image.name)
 
-        st.write(detected_text)
+        # Display extracted text
+        st.text_area("Extracted Text", detected_text.strip())
+
 
 
