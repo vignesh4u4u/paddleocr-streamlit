@@ -20,6 +20,6 @@ if uploaded_files:
             page_text += line[1][0].strip() + " "       
         detected_text += page_text.strip() + "\n\n"
         st.write(f"Extracted Text from Image {idx}:")
-    st.write(detected_text.strip())      
+        st.write(detected_text.strip())      
 
     
