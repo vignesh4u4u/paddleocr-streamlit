@@ -63,7 +63,7 @@ else:
                 os.remove(temp_image.name)
 
         # Display extracted text
-        st.text_area("Extracted Text", detected_text.strip())
+        st.write(detected_text.strip())
 
 
 
