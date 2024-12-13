@@ -1,36 +1,43 @@
-import os
-import streamlit as st
+from flask import Flask, request, jsonify
+from gevent.pywsgi import WSGIServer
 from paddleocr import PaddleOCR
-from PIL import Image
+import warnings
+warnings.filterwarnings("ignore")
+import os
+import logging
+logging.getLogger('ppocr').setLevel(logging.ERROR)
+app = Flask(__name__)
+ocr = PaddleOCR(use_angle_cls=True, lang="en", use_gpu=True)
+def image_to_text(files):
+    try:
+        if not files:
+            return jsonify({"error": "No files provided"}), 400
+        detected_text = ""
+        for idx, file in enumerate(files, start=1):
+            if not file.filename.lower().endswith(('.jpg', '.jpeg', '.png', '.webp')):
+                return jsonify({"error": f"Invalid file type: {file.filename}"}), 400
+            file_path = f"temp_image_{idx}.png"
+            file.save(file_path)
+            result = ocr.ocr(file_path)
+            #detected_text += f"Image {idx} text:\n"
+            for line in result[0]:
+                detected_text += line[1][0] +" "
+            detected_text += "\n\n"
+            os.remove(file_path)
+        return detected_text
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
-ocr = PaddleOCR(use_angle_cls=True, lang='en')
+@app.route('/image_text', methods=['POST'])
+def ocr():
+    files = request.files.getlist("file")
+    output_answer = image_to_text(files)
+    return output_answer
 
-st.title("Image Text Extraction")
+if __name__ == "__main__":
+    print("Starting the server on port 8080")
+    #flask_app.run(debug=False, host="0.0.0.0", port=8080)
+    http_server = WSGIServer(('0.0.0.0', 8080), app)
+    print('Server running on http://0.0.0.0:8080')
+    http_server.serve_forever()
 
-# File uploader for multiple image files
-uploaded_files = st.file_uploader(
-    "Choose image files", 
-    type=['jpg', 'jpeg', 'png', 'webp'], 
-    accept_multiple_files=True
-)
-
-if uploaded_files:
-    detected_text = ""
-
-    for idx, uploaded_file in enumerate(uploaded_files, start=1):
-        # Display the uploaded image
-        image = Image.open(uploaded_file)
-        #st.image(image, caption=f"Uploaded Image {idx}", use_column_width=True)        
-        temp_image_path = f"temp_image_{idx}.png"
-        image.save(temp_image_path)        
-        result = ocr.ocr(temp_image_path)
-        page_text = ""
-        for line in result[0]: 
-            page_text += line[1][0].strip() + " "        
-        detected_text += page_text.strip() + "\n\n"
-        #st.write(f"Extracted Text from Image {idx}:")
-        #st.write(page_text.strip())        
-        os.remove(temp_image_path)
-
-    
-    st.write(detected_text)
