@@ -1,13 +1,13 @@
-db-sqlite3
-pip==23.0.1
-streamlit
-numpy
-Pillow
-paddlepaddle
-paddleocr>=2.0.1
+#db-sqlite3
+#pip==23.0.1
+#streamlit
+#numpy
+#Pillow
+#paddlepaddle
+#paddleocr>=2.0.1
 
-#numpy==1.23.5
-#opencv-python==4.7.0.72
-#paddleocr==2.6.1.2
-#paddlepaddle==2.6.1
+numpy==1.23.5
+opencv-python==4.7.0.72
+paddleocr==2.6.1.2
+paddlepaddle==2.6.1
 
