@@ -10,4 +10,5 @@ numpy==1.23.5
 opencv-python==4.7.0.72
 paddleocr==2.6.1.2
 paddlepaddle==2.6.1
+gevent
 
